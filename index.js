@@ -12,7 +12,7 @@ server.on("request", async(request,response)=>{
             sourceFilePath :"./storage/big-io/index.html",
             sourceFileOperation :"r",
             contentType :"text/html",
-            highWaterMark : 64 * 1024,
+            highWaterMark : 64 * 1024, /** buffer size of each chunk */
             /**optional */
             readStreamIndex:{
                 
@@ -23,6 +23,5 @@ server.on("request", async(request,response)=>{
         hfs.httpReadStream(response)
     }
 })
-
 
 server.listen(3000,()=>log('running'))
