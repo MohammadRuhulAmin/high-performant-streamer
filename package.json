@@ -1,0 +1,19 @@
+{
+  "name": "high-performant-streamer",
+  "version": "1.0.0",
+  "description": "this is a package that can be downloaded, uploaded, transfer, convert data by the help of stream in nodejs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "nodejs",
+    "fileStream",
+    "upload",
+    "stream",
+    "download",
+    "stream"
+  ],
+  "author": "Md. Ruhul Amin",
+  "license": "ISC"
+}
