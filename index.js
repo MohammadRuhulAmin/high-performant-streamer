@@ -6,7 +6,7 @@ const httpFileWriteStream = require("./lib/HttpReadStreamFromFile/HttpReadStream
 const cluster = require('node:cluster');
 const os = require('node:os');
 
-const HOST = "192.168.60.186";
+const HOST = "192.168.96.1";
 const PORT = 3000;
 
 if (cluster.isPrimary) {
@@ -87,12 +87,45 @@ if (cluster.isPrimary) {
                 response.writeHead(500);
                 response.end('Internal Server Error');
             });
-            
         }
         
-        else if (request.url === '/api/test/v1/upload-file' && request.method === 'POST') {
-            log("OKK")
-        } 
+        if (request.url === "/api/test/v1/read-stream-from-file" && request.method === "POST") {
+            const filePath = "./storage/upload/video/212mb.mp4";
+            (async()=>{
+                const fileHandleWrite = await fsPromises.open(filePath,'w');
+                const fileWriteStream = fileHandleWrite.createWriteStream();
+
+                request.on("data",(chunk)=>{
+                    log("receiving chunk:",chunk)
+                    if(fileWriteStream.write(chunk) === false)request.pause();
+                })
+                fileWriteStream.on("drain",()=>request.resume())
+                request.on("end",()=>{
+                    response.end("File uploaded successfully!");
+                })
+                request.on("error",(err)=>log(err.message))
+            })()
+            
+            // const fileStream = fs.createWriteStream(filePath);
+        
+            // request.on("data", async(chunk) => {
+            //     await fileStream.write(chunk);
+            //     log("received chunk: ", chunk)
+            // });
+        
+            // request.on("end", () => {
+            //     fileStream.end();
+            //     response.writeHead(200, { "Content-Type": "video/mp4" });
+            //     response.end("File uploaded successfully!");
+            // });
+        
+            // request.on("error", (err) => {
+            //     console.error("Request Error:", err.message);
+            //     response.writeHead(500);
+            //     response.end("Internal Server Error");
+            // });
+        }
+        
         else{
             response.writeHead(404)
             response.end('Not Found')
