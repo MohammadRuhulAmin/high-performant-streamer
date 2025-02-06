@@ -5,7 +5,7 @@ const httpFileStream = require("./lib/HttpReadStreamFromFile/HttpReadStreamFromF
 const cluster = require('node:cluster');
 const os = require('node:os');
 
-const HOST = "localhost"//"192.168.60.186";
+const HOST = "192.168.60.186";
 const PORT = 3000;
 
 if (cluster.isPrimary) {
@@ -63,6 +63,22 @@ if (cluster.isPrimary) {
             const hfs = new httpFileStream(readStreamSettings);
             await hfs.httpReadStream(response);
         }
+
+        if(request.url === "/api/test/v1/download-file/video_212_mb.mp4"){
+            const readStreamSettings = {
+                sourceFilePath: "./storage/stage/video/video_212_mb.mp4",
+                sourceFileOperation: "r",
+                contentType: "application/octet-stream",
+                highWaterMark: 64 * 1024, // Buffer size
+                readStreamIndex: {}
+            };
+            const hfs = new httpFileStream(readStreamSettings);
+            response.writeHead(200,{
+                "Content-Type":"application/octet-stream"
+            })
+            await hfs.httpReadStream(response);
+        }
+
     });
 
     server.listen(PORT, HOST, () => log(`Worker ${process.pid} listening on http://${HOST}:${PORT}`));
