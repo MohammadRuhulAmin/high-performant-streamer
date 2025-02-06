@@ -1,7 +1,7 @@
 const http = require('node:http')
 const fsPromises = require('node:fs/promises')
 const {log} = require('node:console')
-const httpFileStream =  require("./lib/http-stream/HttpReadStreamFromFile.js")
+const httpFileStream =  require("./lib/HttpReadStreamFromFile/HttpReadStreamFromFile.js")
 
 const server = http.createServer();
 
@@ -47,4 +47,5 @@ server.on("request", async(request,response)=>{
 
 })
 
-server.listen(process.argv[2],()=>log(`Stage Server is running at ${process.argv[2]}`))
+server.listen(process.argv[2],process.argv[3],
+()=>log(`Stage Server is running at http://${process.argv[1]}:${process.argv[2]}`))
