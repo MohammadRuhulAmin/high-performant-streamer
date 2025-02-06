@@ -79,7 +79,7 @@ if (cluster.isPrimary) {
             })
             await hfs.httpReadStream(response);
         }
-        if(request.url === '/upload/file/stream/index.html'){
+        if(request.url === '/upload/file/stream' && request.method === 'GET'){
             response.writeHead(200,{'Content-Type':'text/html'})
             const fileStream = fs.createReadStream("./frontend/index.html")
             fileStream.pipe(response)
@@ -89,6 +89,10 @@ if (cluster.isPrimary) {
             });
             
         }
+        
+        else if (request.url === '/api/test/v1/upload-file' && request.method === 'POST') {
+            log("OKK")
+        } 
         else{
             response.writeHead(404)
             response.end('Not Found')
