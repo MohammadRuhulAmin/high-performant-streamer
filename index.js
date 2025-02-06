@@ -1,7 +1,8 @@
 const http = require('node:http');
 const fsPromises = require('node:fs/promises');
+const fs = require('node:fs')
 const { log } = require('node:console');
-const httpFileStream = require("./lib/HttpReadStreamFromFile/HttpReadStreamFromFile.js");
+const httpFileWriteStream = require("./lib/HttpReadStreamFromFile/HttpReadStreamFromFile.js");
 const cluster = require('node:cluster');
 const os = require('node:os');
 
@@ -36,7 +37,7 @@ if (cluster.isPrimary) {
                 highWaterMark: 1024, // Buffer size
                 readStreamIndex: {}
             };
-            const hfs = new httpFileStream(readStreamSettings);
+            const hfs = new httpFileWriteStream(readStreamSettings);
             await hfs.httpReadStream(response);
         }
 
@@ -48,7 +49,7 @@ if (cluster.isPrimary) {
                 highWaterMark: 64 * 1024, // Buffer size
                 readStreamIndex: {}
             };
-            const hfs = new httpFileStream(readStreamSettings);
+            const hfs = new httpFileWriteStream(readStreamSettings);
             await hfs.httpReadStream(response);
         }
 
@@ -57,10 +58,10 @@ if (cluster.isPrimary) {
                 sourceFilePath: "./storage/stage/audio/3mb.m4a",
                 sourceFileOperation: "r",
                 contentType: "audio/MPEG",
-                highWaterMark: 64 * 1024, // Buffer size
+                highWaterMark: 64 * 1024,
                 readStreamIndex: {}
             };
-            const hfs = new httpFileStream(readStreamSettings);
+            const hfs = new httpFileWriteStream(readStreamSettings);
             await hfs.httpReadStream(response);
         }
 
@@ -72,13 +73,27 @@ if (cluster.isPrimary) {
                 highWaterMark: 64 * 1024, // Buffer size
                 readStreamIndex: {}
             };
-            const hfs = new httpFileStream(readStreamSettings);
+            const hfs = new httpFileWriteStream(readStreamSettings);
             response.writeHead(200,{
                 "Content-Type":"application/octet-stream"
             })
             await hfs.httpReadStream(response);
         }
-
+        if(request.url === '/upload/file/stream/index.html'){
+            response.writeHead(200,{'Content-Type':'text/html'})
+            const fileStream = fs.createReadStream("./frontend/index.html")
+            fileStream.pipe(response)
+            fileStream.on('error', (err) => {
+                response.writeHead(500);
+                response.end('Internal Server Error');
+            });
+            
+        }
+        else{
+            response.writeHead(404)
+            response.end('Not Found')
+        }
+        
     });
 
     server.listen(PORT, HOST, () => log(`Worker ${process.pid} listening on http://${HOST}:${PORT}`));
