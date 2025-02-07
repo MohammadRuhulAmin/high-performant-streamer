@@ -25,7 +25,7 @@
             formData.append('file', file);
 
             try {
-                const response = await fetch('http://192.168.60.186:3000/api/test/v1/upload-file', {
+                const response = await fetch('http://192.168.96.1:3000/api/test/v1/upload-stream-from-any-file', {
                     method: 'POST',
                     body: formData
                 });

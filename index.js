@@ -66,7 +66,7 @@ if (cluster.isPrimary) {
             await hfs.httpReadStream(response);
         }
 
-        if(request.url === "/api/test/v1/download-file/video_212_mb.mp4"){
+        if(request.url === "/api/test/v1/download-file/"){
             const readStreamSettings = {
                 sourceFilePath: "./storage/stage/video/video_212_mb.mp4",
                 sourceFileOperation: "r",
@@ -90,7 +90,7 @@ if (cluster.isPrimary) {
             });
         }
         
-        if (request.url === "/api/test/v1/read-stream-from-file" && request.method === "POST") {
+        else if (request.url === "/api/test/v1/upload-stream-from-any-file" && request.method === "POST") {
             /*console.log(path.basename(request.rawHeaders[5]))*/
             const filePath = `./storage/upload/video/${path.basename(request.rawHeaders[5])}`;
             (async()=>{
